@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate - Madarsa Imdadul Uloom</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-mosque"></i>
+                <h1>Madarsa Imdadul Uloom</h1>
+            </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav id="mobileNav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="donation.html" class="active">Donate</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons" id="mobileAuth">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <h1>Support Our Mission</h1>
+        <p>Your donations help us provide quality Islamic education</p>
+    </div>
+</section>
+
+<section class="donation-section">
+    <div class="container">
+        <div class="donation-options">
+
+            <div class="donation-option">
+                <h3>Bank Transfer</h3>
+                <div class="bank-details">
+                    <p><strong>Bank:</strong> Bank of India</p>
+                    <p><strong>Account Name:</strong> Trust Madarsa Imdadul Uloom</p>
+                    <p><strong>Account Number:</strong> 597420110000157</p>
+                    <p><strong>IFSC Code:</strong> BKID0005974</p>
+                </div>
+            </div>
+
+            <div class="donation-option">
+                <h3>QR Code Payment</h3>
+                <div class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=farsi8@ybl" alt="UPI QR">
+                </div>
+            </div>
+
+            <div class="donation-option">
+                <h3>Online Donation</h3>
+                <form id="donationForm">
+                    
+                    <div class="form-group">
+                        <label for="donationAmount">Amount (₹)</label>
+                        <input type="number" id="donationAmount" required min="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="donorName">Full Name</label>
+                        <input type="text" id="donorName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="donorEmail">Email</label>
+                        <input type="email" id="donorEmail" required>
+                    </div>
+
+                    <!-- ✅ Phone Added -->
+                    <div class="form-group">
+                        <label for="donorPhone">Phone</label>
+                        <input type="tel" id="donorPhone" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Donate Now</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<footer></footer>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="js/donation.js"></script>
+<script src="js/mobile-menu.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Madarsa Imdadul Uloom</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --primary: #1a5f7a;
+    --secondary: #159895;
+    --accent: #57C5B6;
+    --light: #f8f9fa;
+    --dark: #35373a;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    background: #fff;
+    width: 100%;
+    max-width: 450px;
+    padding: 40px 35px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    border: 2px solid var(--accent);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary);
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.mode-switch {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    background: var(--light);
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.mode-switch button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    margin: 0 3px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: var(--dark);
+}
+
+.mode-switch .active {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(26, 95, 122, 0.3);
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 45px 15px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--light);
+}
+
+.input-group input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(87, 197, 182, 0.2);
+    background: white;
+}
+
+.input-group .input-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.input-group .input-icon:hover {
+    color: var(--primary);
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark);
+}
+
+.remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+}
+
+.forgot-password {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(26, 95, 122, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 95, 122, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+#otpSection {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.otp-info {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #e8f5e8;
+    border-radius: 6px;
+    color: var(--success);
+    font-size: 0.9rem;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 25px;
+    color: var(--dark);
+}
+
+.register-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 25px;
+    }
+    
+    h2 {
+        font-size: 1.7rem;
+    }
+    
+    .mode-switch {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .mode-switch button {
+        margin: 2px 0;
+    }
+    
+    .remember-forgot {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="login-container">
+    <h2><i class="fas fa-user-graduate"></i> Login</h2>
+
+    <div class="mode-switch">
+        <button id="mode1" class="active" onclick="setMode(1)">
+            <i class="fas fa-envelope"></i> Email
+        </button>
+        <button id="mode2" onclick="setMode(2)">
+            <i class="fas fa-mobile-alt"></i> Mobile
+        </button>
+        <button id="mode3" onclick="setMode(3)">
+            <i class="fas fa-key"></i> Email OTP
+        </button>
+    </div>
+
+    <form id="loginForm">
+        <!-- Email + Password -->
+        <div id="emailPassSection">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Enter Email" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="passwordEmail" placeholder="Enter Password" required>
+                <i class="fas fa-eye input-icon" onclick="togglePassword('passwordEmail', this)"></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberEmail"> Remember me
+                </label>
+                <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+            </div>
+
+            <button type="button" class="btn" onclick="loginEmailPass()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </div>
+
+        <!-- Mobile + Password -->
+        <div id="mobilePassSection" style="display:none;">
+            <div class="input-group">
+                <input type="tel" id="mobile" placeholder="Enter Mobile Number" required>
+                <i class="fas fa-mobile-alt input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="passwordMobile" placeholder="Enter Password" required>
+                <i class="fas fa-eye input-icon" onclick="togglePassword('passwordMobile', this)"></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMobile"> Remember me
+                </label>
+                <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+            </div>
+
+            <button type="button" class="btn" onclick="loginMobilePass()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </div>
+
+        <!-- Email + OTP Login -->
+        <div id="otpRequestSection" style="display:none;">
+            <div class="input-group">
+                <input type="email" id="emailOTP" placeholder="Enter Email" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+
+            <button type="button" class="btn" onclick="sendLoginOTP()">
+                <i class="fas fa-paper-plane"></i> Send OTP
+            </button>
+        </div>
+
+        <div id="otpSection">
+            <div class="otp-info">
+                <i class="fas fa-info-circle"></i> OTP sent to your email
+            </div>
+            <div class="input-group">
+                <input type="text" id="otp" placeholder="Enter 6-digit OTP" maxlength="6" required>
+                <i class="fas fa-shield-alt input-icon"></i>
+            </div>
+
+            <button type="button" class="btn" onclick="verifyLoginOTP()">
+                <i class="fas fa-check"></i> Verify & Login
+            </button>
+        </div>
+    </form>
+
+    <div class="register-link">
+        Don't have an account? <a href="register.html">Sign up now</a>
+    </div>
+</div>
+
+<script>
+// Load remembered credentials on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadRememberedCredentials();
+});
+
+function setMode(m){
+    document.getElementById("mode1").classList.remove("active");
+    document.getElementById("mode2").classList.remove("active");
+    document.getElementById("mode3").classList.remove("active");
+
+    document.getElementById("emailPassSection").style.display="none";
+    document.getElementById("mobilePassSection").style.display="none";
+    document.getElementById("otpRequestSection").style.display="none";
+    document.getElementById("otpSection").style.display="none";
+
+    if(m === 1){ 
+        mode1.classList.add("active"); 
+        emailPassSection.style.display="block"; 
+    }
+    if(m === 2){ 
+        mode2.classList.add("active"); 
+        mobilePassSection.style.display="block"; 
+    }
+    if(m === 3){ 
+        mode3.classList.add("active"); 
+        otpRequestSection.style.display="block"; 
+    }
+}
+
+// Toggle password visibility
+function togglePassword(passwordFieldId, iconElement) {
+    const passwordField = document.getElementById(passwordFieldId);
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        iconElement.classList.remove("fa-eye");
+        iconElement.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        iconElement.classList.remove("fa-eye-slash");
+        iconElement.classList.add("fa-eye");
+    }
+}
+
+// Load remembered credentials from localStorage
+function loadRememberedCredentials() {
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    const rememberedMobile = localStorage.getItem('rememberedMobile');
+    
+    if (rememberedEmail) {
+        document.getElementById('email').value = rememberedEmail;
+        document.getElementById('rememberEmail').checked = true;
+    }
+    
+    if (rememberedMobile) {
+        document.getElementById('mobile').value = rememberedMobile;
+        document.getElementById('rememberMobile').checked = true;
+    }
+}
+
+// Save credentials to localStorage if remember me is checked
+function saveCredentials(mode, identifier) {
+    if (mode === 1 && document.getElementById('rememberEmail').checked) {
+        localStorage.setItem('rememberedEmail', identifier);
+    } else if (mode === 2 && document.getElementById('rememberMobile').checked) {
+        localStorage.setItem('rememberedMobile', identifier);
+    }
+}
+
+// Clear remembered credentials
+function clearCredentials() {
+    localStorage.removeItem('rememberedEmail');
+    localStorage.removeItem('rememberedMobile');
+}
+
+// ✅ Email + Password Login
+async function loginEmailPass(){
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("passwordEmail").value.trim();
+    
+    if(!email || !password) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/login-email", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, password})
+        });
+        
+        const data = await res.json();
+        
+        if(!data.success) {
+            alert(data.message || "Login failed");
+            return;
+        }
+
+        // Save credentials if remember me is checked
+        saveCredentials(1, email);
+        
+        localStorage.setItem("token", data.token); 
+        localStorage.setItem("user", JSON.stringify(data.user));
+        
+        // dashboard redirection based on user type
+        const user = data.user;
+        redirectToDashboard(user);
+        
+    } catch (error) {
+        console.error("Login error:", error);
+        alert("Something went wrong. Please try again.");
+    }
+}
+
+// ✅ Mobile + Password Login Function
+async function loginMobilePass() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const password = document.getElementById("passwordMobile").value.trim();
+
+    if (!mobile || !password) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/login-mobile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mobile, password })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            alert(data.message || "Login failed");
+            return;
+        }
+
+        // Save credentials if remember me is checked
+        saveCredentials(2, mobile);
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        const user = data.user;
+        redirectToDashboard(user);
+
+    } catch (error) {
+        console.error("Login Error:", error);
+        alert("Something went wrong, please try again.");
+    }
+}
+
+// ✅ Email OTP Login
+let emailStored = "";
+
+async function sendLoginOTP(){
+    let email = document.getElementById("emailOTP").value.trim();
+    if(!email) {
+        alert("Please enter your email");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/send-login-otp", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email})
+        });
+
+        const data = await res.json();
+        if(!data.success) {
+            alert(data.message || "Failed to send OTP");
+            return;
+        }
+
+        emailStored = email;
+        document.getElementById("otpSection").style.display = "block";
+        document.getElementById("otpRequestSection").style.display = "none";
+        
+    } catch (error) {
+        console.error("OTP send error:", error);
+        alert("Failed to send OTP. Please try again.");
+    }
+}
+
+async function verifyLoginOTP(){
+    let otp = document.getElementById("otp").value.trim();
+    
+    if(!otp) {
+        alert("Please enter the OTP");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/verify-otp-login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email: emailStored, otp})
+        });
+        
+        const data = await res.json();
+        if(!data.success) {
+            alert(data.message || "Invalid OTP");
+            return;
+        }
+
+        alert("✅ Login Successful");
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        const user = data.user;
+        redirectToDashboard(user);
+
+    } catch (error) {
+        console.error("OTP verification error:", error);
+        alert("OTP verification failed. Please try again.");
+    }
+}
+
+// Redirect to appropriate dashboard
+function redirectToDashboard(user) {
+    if (user.userType === "admin") {
+        window.location.href = "admin-dashboard.html";
+    } else if (user.userType === "teacher") {
+        window.location.href = "teacher-dashboard.html";
+    } else if (user.userType === "parent") {
+        window.location.href = "parent-dashboard.html";
+    } else {
+        window.location.href = "student-dashboard.html";
+    }
+}
+</script>
+
+</body>
+</html>

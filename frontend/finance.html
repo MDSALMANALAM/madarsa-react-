@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Finance Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .dashboard-container { width: 90%; margin: auto; padding: 20px; }
+    .cards { display: flex; gap: 20px; margin-bottom: 30px; }
+    .card { flex: 1; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 6px #ccc; }
+    .card h2 { margin-bottom: 10px; }
+    .form-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 8px; box-shadow: 0px 0px 6px #ccc; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="finance.html" class="active">Finance</a>
+  </nav>
+</header>
+
+<div class="dashboard-container">
+
+  <h1>Finance Dashboard</h1>
+
+  <div class="cards">
+    <div class="card">
+      <h2>Today Income</h2>
+      <p id="todayIncome">₹ 0</p>
+    </div>
+
+    <div class="card">
+      <h2>Today Expense</h2>
+      <p id="todayExpense">₹ 0</p>
+    </div>
+
+    <div class="card">
+      <h2>Balance</h2>
+      <p id="balance">₹ 0</p>
+    </div>
+  </div>
+
+  <div class="form-box">
+    <h3>Add Fee Payment</h3>
+    <input id="studentId" placeholder="Student ID">
+    <input id="feeAmount" placeholder="Amount">
+    <input id="feeMonth" placeholder="Month">
+    <button onclick="addFee()">Add Fee</button>
+  </div>
+
+  <div class="form-box">
+    <h3>Add Expense</h3>
+    <input id="expTitle" placeholder="Title">
+    <input id="expAmount" placeholder="Amount">
+    <button onclick="addExpense()">Add Expense</button>
+  </div>
+
+</div>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+<script src="js/finance.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+# ===============================
+# NODE MODULES
+# ===============================
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# ===============================
+# ENVIRONMENT VARIABLES (SENSITIVE)
+# ===============================
+.env
+.env.local
+.env.production
+.env.development
+config.js
+secrets.js
+
+# ===============================
+# DATABASE FILES
+# ===============================
+*.sql
+*.sqlite
+*.db
+
+# ===============================
+# UPLOADED FILES (USER DATA)
+# ===============================
+backend/uploads/
+backend/receipts/
+uploads/
+receipts/
+
+# ===============================
+# LOGS
+# ===============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===============================
+# OPERATING SYSTEM FILES
+# ===============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===============================
+# IDE / EDITOR FILES
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ===============================
+# TEMPORARY FILES
+# ===============================
+tmp/
+temp/
+*.tmp
+
+# ===============================
+# BUILD FILES
+# ===============================
+dist/
+build/
+
+# ===============================
+# SENSITIVE DOCUMENTS
+# ===============================
+*.pem
+*.key
+*.cert
+*.crt
+

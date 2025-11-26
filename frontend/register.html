@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Madarsa Imdadul Uloom - Sign Up</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+        --primary: #1a5f7a;
+        --secondary: #159895;
+        --accent: #57C5B6;
+        --light: #f8f9fa;
+        --dark: #35373a;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+    body{background:linear-gradient(135deg, var(--primary), var(--secondary));min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+    .box{background:#fff;width:100%;max-width:480px;padding:40px 35px;border-radius:12px;box-shadow:0 15px 35px rgba(0,0,0,0.2);border:2px solid var(--accent);}
+    .logo{text-align:center;margin-bottom:25px;}
+    .logo i{font-size:48px;color:var(--primary);margin-bottom:10px;}
+    .logo h2{color:var(--primary);margin-bottom:8px;}
+    .logo p{color:var(--dark);}
+    
+    label{font-size:14px;font-weight:600;margin-bottom:6px;display:block;color:var(--dark);}
+    
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    input,select{
+        width:100%;
+        padding:15px 45px 15px 15px;
+        border:2px solid #e1e5e9;
+        border-radius:8px;
+        font-size:15px;
+        background:var(--light);
+        transition: all 0.3s ease;
+    }
+    
+    input:focus, select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(87, 197, 182, 0.2);
+        background: white;
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        background: none;
+        border: none;
+        font-size: 16px;
+    }
+    
+    .input-icon:hover {
+        color: var(--primary);
+    }
+    
+    .btn{
+        width:100%;
+        padding:15px;
+        border:none;
+        border-radius:8px;
+        font-weight:600;
+        background:linear-gradient(135deg, var(--primary), var(--secondary));
+        color:white;
+        cursor:pointer;
+        font-size:16px;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(26, 95, 122, 0.3);
+    }
+    
+    .btn:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(26, 95, 122, 0.4);
+    }
+    
+    .btn:active {
+        transform: translateY(0);
+    }
+    
+    #otpBox{
+        display:none;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .otp-info {
+        text-align: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #e8f5e8;
+        border-radius: 6px;
+        color: var(--success);
+        font-size: 0.9rem;
+    }
+    
+    .login{
+        text-align:center;
+        margin-top:25px;
+        font-size:14px;
+        color: var(--dark);
+    }
+    
+    .login a{
+        color:var(--primary);
+        text-decoration:none;
+        font-weight:600;
+        transition: color 0.3s ease;
+    }
+    
+    .login a:hover {
+        color: var(--secondary);
+        text-decoration: underline;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+        .box {
+            padding: 30px 25px;
+        }
+        
+        .logo i {
+            font-size: 40px;
+        }
+        
+        .logo h2 {
+            font-size: 1.5rem;
+        }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="logo">
+      <i class="fas fa-mosque"></i>
+      <h2>Madarsa Imdadul Uloom</h2>
+      <p>Create your account</p>
+    </div>
+
+    <form id="registerForm">
+      <div class="input-group">
+        <label>Full Name</label>
+        <input id="name" type="text" placeholder="Enter your full name" required>
+        <i class="fas fa-user input-icon"></i>
+      </div>
+
+      <div class="input-group">
+        <label>Email Address</label>
+        <input id="email" type="email" placeholder="Enter your email" required>
+        <i class="fas fa-envelope input-icon"></i>
+      </div>
+
+      <div class="input-group">
+        <label>Mobile Number</label>
+        <input id="mobile" type="tel" placeholder="Enter mobile number" required>
+        <i class="fas fa-mobile-alt input-icon"></i>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Enter password" required>
+        <button type="button" class="input-icon" onclick="togglePassword('password', this)">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+
+      <div class="input-group">
+        <label>Confirm Password</label>
+        <input id="confirmPassword" type="password" placeholder="Confirm password" required>
+        <button type="button" class="input-icon" onclick="togglePassword('confirmPassword', this)">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+
+      <div class="input-group">
+        <label>I am a</label>
+        <select id="userType" required>
+          <option value="" disabled selected>Select user type</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="parent">Parent</option>
+          <option value="admin">Administrator</option>
+        </select>
+        <i class="fas fa-user-tag input-icon" style="pointer-events: none;"></i>
+      </div>
+
+      <button type="button" class="btn" onclick="sendOTP()">
+        <i class="fas fa-paper-plane"></i> Send OTP
+      </button>
+
+      <div id="otpBox">
+        <div class="otp-info">
+          <i class="fas fa-info-circle"></i> OTP sent to your email
+        </div>
+        <div class="input-group">
+          <label>Enter OTP</label>
+          <input id="otp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" required>
+          <i class="fas fa-shield-alt input-icon"></i>
+        </div>
+        <button type="button" class="btn" onclick="verifyAndRegister()">
+          <i class="fas fa-check"></i> Verify & Create Account
+        </button>
+      </div>
+    </form>
+
+    <p class="login">Already have an account? <a href="login.html">Login here</a></p>
+  </div>
+
+<script>
+  let emailStored = "";
+
+  // Toggle password visibility
+  function togglePassword(passwordFieldId, buttonElement) {
+    const passwordField = document.getElementById(passwordFieldId);
+    const icon = buttonElement.querySelector('i');
+    
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    } else {
+      passwordField.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+
+  async function sendOTP(){
+    const email = document.getElementById("email").value.trim();
+    if(!email) {
+      alert("⚠ Please enter your email!");
+      return;
+    }
+
+    // Validate other required fields before sending OTP
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const confirmPassword = document.getElementById("confirmPassword").value.trim();
+    const userType = document.getElementById("userType").value;
+
+    if(!name || !mobile || !password || !confirmPassword || !userType) {
+      alert("⚠ Please fill all fields before sending OTP!");
+      return;
+    }
+
+    if(password !== confirmPassword) {
+      alert("❌ Passwords do not match!");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/send-otp",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email})
+      });
+      const data = await res.json();
+
+      if(!data.success) {
+        alert("❌ " + (data.message || "OTP send failed"));
+        return;
+      }
+
+      emailStored = email;
+      document.getElementById("otpBox").style.display = "block";
+      
+    } catch (error) {
+      console.error("OTP send error:", error);
+      alert("❌ Failed to send OTP. Please try again.");
+    }
+  }
+
+  async function verifyAndRegister(){
+    const otp = document.getElementById("otp").value.trim();
+    if(!otp) {
+      alert("⚠ Please enter the OTP!");
+      return;
+    }
+
+    try {
+      // ✅ Verify OTP
+      const verify = await fetch("/api/auth/verify-otp",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email:emailStored,otp})
+      });
+      const v = await verify.json();
+      
+      if(!v.success) {
+        alert("❌ " + (v.message || "Wrong OTP"));
+        return;
+      }
+
+      // ✅ Collect Form Data Properly
+      const fullName = document.getElementById("name").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const passwordVal = document.getElementById("password").value.trim();
+      const confirmPasswordVal = document.getElementById("confirmPassword").value.trim();
+      const userTypeVal = document.getElementById("userType").value;
+
+      // Final validation
+      if(passwordVal !== confirmPasswordVal) {
+        alert("❌ Password mismatch!");
+        return;
+      }
+
+      if(!fullName || !mobile || !userTypeVal) {
+        alert("⚠ Please fill all required fields!");
+        return;
+      }
+
+      // ✅ Register User
+      const register = await fetch("/api/auth/register",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          name: fullName,
+          email: emailStored,
+          mobile,
+          password: passwordVal,
+          userType: userTypeVal
+        })
+      });
+
+      const r = await register.json();
+      
+      if(!r.success) {
+        alert("❌ " + (r.message || "Registration failed"));
+        return;
+      }
+
+      alert("✅ Account created successfully!");
+      window.location.href = "login.html";
+      
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("❌ Registration failed. Please try again.");
+    }
+  }
+
+  // Real-time password match validation
+  document.getElementById('confirmPassword').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    
+    if (confirmPassword && password !== confirmPassword) {
+      this.style.borderColor = 'var(--danger)';
+    } else if (confirmPassword) {
+      this.style.borderColor = 'var(--success)';
+    } else {
+      this.style.borderColor = '#e1e5e9';
+    }
+  });
+</script>
+
+</body>
+</html>

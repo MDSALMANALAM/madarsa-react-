@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Library - Madarsa Imdadul Uloom</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-mosque"></i>
+                    <h1>Madarsa Imdadul Uloom</h1>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav id="mobileNav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="admission.html">Admission</a></li>
+                        <li><a href="library.html" class="active">Library</a></li>
+                        <li><a href="donation.html">Donate</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons" id="mobileAuth">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Digital Library</h1>
+            <p>Access study materials, PDF books, and educational resources</p>
+        </div>
+    </section>
+
+    <section class="library-section">
+        <div class="container">
+            <div class="library-filters">
+                <div class="filter-group">
+                    <label for="categoryFilter">Category:</label>
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="quran">Quran & Tajweed</option>
+                        <option value="hadith">Hadith Studies</option>
+                        <option value="fiqh">Fiqh & Aqeedah</option>
+                        <option value="seerah">Seerah</option>
+                        <option value="modern">Modern Subjects</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="classFilter">Class:</label>
+                    <select id="classFilter">
+                        <option value="all">All Classes</option>
+                        <option value="1">Class 1</option>
+                        <option value="2">Class 2</option>
+                        <option value="3">Class 3</option>
+                        <option value="4">Class 4</option>
+                        <option value="5">Class 5</option>
+                        <option value="6">Class 6</option>
+                        <option value="7">Class 7</option>
+                        <option value="8">Class 8</option>
+                        <option value="9">Class 9</option>
+                        <option value="10">Class 10</option>
+                    </select>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchMaterial" placeholder="Search materials...">
+                    <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <div class="materials-grid">
+                <!-- Materials will be loaded dynamically from API -->
+                <div style="text-align: center; padding: 40px; width: 100%;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: #0891b2;"></i>
+                    <p style="margin-top: 20px; color: #666;">Loading materials...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <!-- Same footer as index.html -->
+    </footer>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/library.js"></script>
+    <script src="js/mobile-menu.js"></script>
+</body>
+</html>

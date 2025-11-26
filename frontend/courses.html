@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Al-Huda Madarsa</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-mosque"></i>
+                    <h1>Madarsa Imdadul Uloom</h1>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav id="mobileNav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="courses.html" class="active">Courses</a></li>
+                        <li><a href="admission.html">Admission</a></li>
+                        <li><a href="library.html">Library</a></li>
+                        <li><a href="donation.html">Donate</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons" id="mobileAuth">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Our Courses & Classes</h1>
+            <p>Comprehensive Islamic and modern education from Class 1 to 10</p>
+        </div>
+    </section>
+
+    <section class="courses-section">
+        <div class="container">
+            <div class="classes-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="primary">Primary (1-5)</button>
+                    <button class="tab-btn" data-tab="middle">Middle (6-8)</button>
+                    <button class="tab-btn" data-tab="secondary">Secondary (9-10)</button>
+                    <button class="tab-btn" data-tab="islamic">Islamic Studies</button>
+                </div>
+
+                <div class="tab-content active" id="primary">
+                    <h3>Primary Education (Classes 1-5)</h3>
+                    <div class="courses-grid">
+                        <div class="course-card">
+                            <h4>Class 1</h4>
+                            <ul>
+                                <li>Quran: Noorani Qaida & Basic Tajweed</li>
+                                <li>Islamic Studies: Basic Aqeedah & Manners</li>
+                                <li>Mathematics: Numbers 1-100, Addition, Subtraction</li>
+                                <li>English: Alphabet, Basic Words & Sentences</li>
+                                <li>Urdu/Hindi: Reading & Writing Basics</li>
+                                <li>General Knowledge: About Family, Animals, Plants</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+                        
+                        <div class="course-card">
+                            <h4>Class 2</h4>
+                            <ul>
+                                <li>Quran: Short Surahs (Al-Fatihah, Ikhlas)</li>
+                                <li>Islamic Studies: Pillars of Islam & Stories of Prophets</li>
+                                <li>Mathematics: Multiplication, Division, Time</li>
+                                <li>English: Simple Grammar, Reading Comprehension</li>
+                                <li>Urdu/Hindi: Paragraph Writing, Poetry</li>
+                                <li>Science: Living & Non-living Things</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Class 3</h4>
+                            <ul>
+                                <li>Quran: Juz Amma (Short Surahs)</li>
+                                <li>Islamic Studies: Seerah of Prophet Muhammad (PBUH)</li>
+                                <li>Mathematics: Fractions, Measurements, Money</li>
+                                <li>English: Tenses, Composition Writing</li>
+                                <li>Urdu/Hindi: Story Writing, Grammar</li>
+                                <li>Social Studies: Our Community & Environment</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Class 4</h4>
+                            <ul>
+                                <li>Quran: Reading with Tajweed Rules</li>
+                                <li>Islamic Studies: Fiqh (Basic Islamic Law)</li>
+                                <li>Mathematics: Geometry, Decimals, Area</li>
+                                <li>English: Letter Writing, Advanced Grammar</li>
+                                <li>Urdu/Hindi: Essay Writing, Comprehension</li>
+                                <li>Science: Human Body, Plants, Animals</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Class 5</h4>
+                            <ul>
+                                <li>Quran: Memorization of Selected Surahs</li>
+                                <li>Islamic Studies: Islamic History & Civilization</li>
+                                <li>Mathematics: Percentage, Average, Volume</li>
+                                <li>English: Story Writing, Public Speaking</li>
+                                <li>Urdu/Hindi: Creative Writing, Drama</li>
+                                <li>Computer Basics: Introduction to Computers</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="middle">
+                    <h3>Middle Education (Classes 6-8)</h3>
+                    <div class="courses-grid">
+                        <div class="course-card">
+                            <h4>Class 6</h4>
+                            <ul>
+                                <li>Quran: Tajweed Rules & Practical Application</li>
+                                <li>Islamic Studies: Life of Prophet Muhammad (PBUH)</li>
+                                <li>Mathematics: Algebra, Ratio & Proportion</li>
+                                <li>English: Grammar, Composition, Literature</li>
+                                <li>Science: Physics, Chemistry, Biology Basics</li>
+                                <li>Social Studies: History & Geography</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Class 7</h4>
+                            <ul>
+                                <li>Quran: Memorization & Tafsir (Explanation)</li>
+                                <li>Islamic Studies: Hadith Studies & Fiqh</li>
+                                <li>Mathematics: Geometry, Statistics, Equations</li>
+                                <li>English: Advanced Grammar, Essay Writing</li>
+                                <li>Science: Light, Sound, Heat, Living Organisms</li>
+                                <li>Computer: MS Office, Basic Programming</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Class 8</h4>
+                            <ul>
+                                <li>Quran: Complete Juz 30 with Translation</li>
+                                <li>Islamic Studies: Islamic Civilization & Ethics</li>
+                                <li>Mathematics: Trigonometry, Mensuration</li>
+                                <li>English: Comprehension, Creative Writing</li>
+                                <li>Science: Force, Energy, Reproduction</li>
+                                <li>Preparation for Board Exams</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="secondary">
+                    <h3>Secondary Education (Classes 9-10)</h3>
+                    <div class="courses-grid">
+                        <div class="course-card">
+                            <h4>Class 9</h4>
+                            <ul>
+                                <li>Quran: Selected Surahs with Detailed Tafsir</li>
+                                <li>Islamic Studies: Comparative Religion</li>
+                                <li>Mathematics: Algebra, Geometry, Statistics</li>
+                                <li>English: Literature, Advanced Composition</li>
+                                <li>Science: Physics, Chemistry, Biology</li>
+                                <li>Computer Science: Programming Fundamentals</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Class 10</h4>
+                            <ul>
+                                <li>Quran: Revision & Advanced Tajweed</li>
+                                <li>Islamic Studies: Contemporary Islamic Issues</li>
+                                <li>Mathematics: Advanced Algebra & Calculus</li>
+                                <li>English: Board Exam Preparation</li>
+                                <li>Science: Complete Syllabus Revision</li>
+                                <li>Career Guidance & Counseling</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="islamic">
+                    <h3>Islamic Studies Program</h3>
+                    <div class="courses-grid">
+                        <div class="course-card">
+                            <h4>Quran Studies</h4>
+                            <ul>
+                                <li>Noorani Qaida & Basic Reading</li>
+                                <li>Tajweed Rules & Practical Application</li>
+                                <li>Quran Memorization (Hifz)</li>
+                                <li>Tafsir (Quran Explanation)</li>
+                                <li>Quran Translation & Understanding</li>
+                                <li>Tajweed Certification Course</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Hadith Studies</h4>
+                            <ul>
+                                <li>Introduction to Hadith Sciences</li>
+                                <li>40 Hadith of Imam Nawawi</li>
+                                <li>Riyad us Saliheen Study</li>
+                                <li>Hadith Terminology</li>
+                                <li>Authentication of Hadith</li>
+                                <li>Practical Application of Hadith</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Fiqh & Islamic Law</h4>
+                            <ul>
+                                <li>Basic Fiqh of Worship</li>
+                                <li>Purification & Salah</li>
+                                <li>Fasting & Zakat</li>
+                                <li>Hajj & Umrah</li>
+                                <li>Islamic Family Law</li>
+                                <li>Contemporary Fiqh Issues</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Seerah & History</h4>
+                            <ul>
+                                <li>Life of Prophet Muhammad (PBUH)</li>
+                                <li>History of Prophets</li>
+                                <li>Islamic Civilization</li>
+                                <li>Rightly Guided Caliphs</li>
+                                <li>Muslim Scientists & Scholars</li>
+                                <li>Contemporary Muslim World</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Islamic Ethics & Character</h4>
+                            <ul>
+                                <li>Building Islamic Personality</li>
+                                <li>Good Manners & Morals</li>
+                                <li>Islamic Etiquette</li>
+                                <li>Dawah & Community Service</li>
+                                <li>Time Management in Islam</li>
+                                <li>Islamic Finance Basics</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+
+                        <div class="course-card">
+                            <h4>Arabic Language</h4>
+                            <ul>
+                                <li>Arabic Alphabet & Reading</li>
+                                <li>Basic Arabic Grammar</li>
+                                <li>Conversational Arabic</li>
+                                <li>Quranic Arabic</li>
+                                <li>Arabic Writing Skills</li>
+                                <li>Advanced Arabic Studies</li>
+                            </ul>
+                            <a href="admission.html" class="btn btn-primary">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <!-- Same footer as index.html -->
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/courses.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/mobile-menu.js"></script>
+</body>
+</html>
