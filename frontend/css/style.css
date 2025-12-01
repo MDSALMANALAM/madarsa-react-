@@ -881,4 +881,69 @@ footer {
     }
 }
 
+/* Donation Section Grid Responsive */
+.donation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+}
 
+.donation-hadees {
+    text-align: left;
+}
+
+.donation-hadees h3,
+.donation-bank h3 {
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    padding-bottom: 5px;
+}
+
+.donation-qr {
+    text-align: center;
+}
+
+.donation-qr img {
+    width: 160px;
+    height: 160px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: #fff;
+    padding: 8px;
+}
+
+.donate-btn {
+    background: #ffffff;
+    color: #0b63d3;
+    padding: 12px 25px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+}
+
+/* Mobile - Donation Section */
+@media (max-width: 768px) {
+    .donation-grid {
+        grid-template-columns: 1fr !important;
+        gap: 25px;
+    }
+
+    .donation-hadees,
+    .donation-bank,
+    .donation-qr {
+        text-align: center;
+    }
+
+    .donation-qr img {
+        width: 180px;
+        height: 180px;
+    }
+
+    /* Stats grid - donation box full width */
+    .stats-grid .stat-item[style*="grid-column: span 4"] {
+        grid-column: span 1 !important;
+    }
+}
