@@ -7,7 +7,11 @@ const path = require('path');
 const db = require('../config/db');
 
 const REPORTS_DIR = path.join(__dirname, '..', 'uploads', 'reports');
-if (!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR, { recursive: true });
+try {
+    if (!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR, { recursive: true });
+} catch (err) {
+    console.log('Reports directory will be created on demand:', err.message);
+}
 
 // Helper function to add colorful header
 function addHeader(doc, title, subtitle) {

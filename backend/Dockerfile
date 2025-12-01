@@ -26,15 +26,9 @@ RUN npm install --omit=dev
 # Copy backend code
 COPY . .
 
-# Create directories for uploads and WhatsApp auth
-RUN mkdir -p uploads/library uploads/students uploads/admission_docs uploads/materials uploads/reports receipts whatsapp_auth
-
-# Set non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S madarsa -u 1001 -G nodejs && \
-    chown -R madarsa:nodejs /app
-
-USER madarsa
+# Create directories for uploads and WhatsApp auth with proper permissions
+RUN mkdir -p uploads/library uploads/students uploads/admission_docs uploads/materials uploads/reports receipts whatsapp_auth && \
+    chmod -R 777 uploads receipts whatsapp_auth
 
 # Expose backend port
 EXPOSE 5000
