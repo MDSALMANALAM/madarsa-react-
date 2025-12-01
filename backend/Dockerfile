@@ -27,7 +27,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Create directories for uploads and WhatsApp auth
-RUN mkdir -p uploads/library uploads/students uploads/admission_docs uploads/materials receipts whatsapp_auth
+RUN mkdir -p uploads/library uploads/students uploads/admission_docs uploads/materials uploads/reports receipts whatsapp_auth
 
 # Set non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
