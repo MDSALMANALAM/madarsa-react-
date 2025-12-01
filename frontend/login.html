@@ -430,7 +430,14 @@ async function loginEmailPass(){
         const data = await res.json();
         
         if(!data.success) {
-            alert(data.message || "Login failed");
+            // Show special message for pending approval
+            if(data.approvalStatus === 'pending') {
+                alert("⏳ " + data.message + "\n\nPlease wait for admin approval.");
+            } else if(data.approvalStatus === 'rejected') {
+                alert("❌ " + data.message);
+            } else {
+                alert(data.message || "Login failed");
+            }
             return;
         }
 
@@ -470,7 +477,14 @@ async function loginMobilePass() {
         const data = await res.json();
 
         if (!data.success) {
-            alert(data.message || "Login failed");
+            // Show special message for pending approval
+            if(data.approvalStatus === 'pending') {
+                alert("⏳ " + data.message + "\n\nPlease wait for admin approval.");
+            } else if(data.approvalStatus === 'rejected') {
+                alert("❌ " + data.message);
+            } else {
+                alert(data.message || "Login failed");
+            }
             return;
         }
 

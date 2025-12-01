@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 
+// NATS & Notification Services
+const natsService = require('./services/natsService');
+const notificationConsumer = require('./services/notificationConsumer');
 
 // Routes
 const reportsRouter = require('./routes/reports');
@@ -46,10 +49,44 @@ app.use("/api/upload", require("./routes/upload"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/teachers", require("./routes/teacher"));
 app.use("/api/popup", require("./routes/popup"));
+app.use("/api/users", require("./routes/userApproval")); // ✅ User approval routes
+app.use("/api/whatsapp", require("./routes/whatsapp")); // ✅ WhatsApp routes
 
-// Home Page
+// Serve Frontend Static Files
+const fs = require('fs');
+const frontendPath = path.join(__dirname, 'frontend');
+const altFrontendPath = path.join(__dirname, '../frontend');
+
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+} else if (fs.existsSync(altFrontendPath)) {
+  app.use(express.static(altFrontendPath));
+}
+
+// Home Page - serve index.html or API info
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  const indexPath = fs.existsSync(frontendPath)
+    ? path.join(frontendPath, 'index.html')
+    : path.join(altFrontendPath, 'index.html');
+
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.json({
+      success: true,
+      message: '🕌 Madarsa Imdadul Uloom - API Server',
+      version: '1.0.0',
+      endpoints: {
+        finance: '/api/finance',
+        students: '/api/students',
+        teachers: '/api/teachers',
+        admissions: '/api/admissions',
+        donation: '/api/donation',
+        library: '/api/library',
+        whatsapp: '/api/whatsapp'
+      }
+    });
+  }
 });
 
 // MongoDB Connect
@@ -57,12 +94,26 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.log('❌ MongoDB error:', err));
 
-// Start Server
+// Start Server & Initialize Services
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '0.0.0.0', async () => {
   console.log(`🚀 Server running on:`);
   console.log(`   Local:   http://localhost:${PORT}`);
   console.log(`   Network: http://YOUR_IP_ADDRESS:${PORT}`);
+
+  // Initialize NATS Connection
+  try {
+    await natsService.connectNATS();
+    console.log('✅ NATS service ready');
+
+    // Start notification consumer (listens for events & sends WhatsApp)
+    await notificationConsumer.startConsumer();
+    console.log('✅ Notification consumer started - WhatsApp real-time active!');
+  } catch (err) {
+    console.warn('⚠️ NATS/Notification service unavailable:', err.message);
+    console.log('   App will work, but real-time notifications disabled');
+  }
+
   console.log(`\n📱 Phone se access karne ke liye:`);
   console.log(`   1. Same WiFi pe connect karo`);
   console.log(`   2. Browser me open karo: http://YOUR_IP_ADDRESS:${PORT}`);

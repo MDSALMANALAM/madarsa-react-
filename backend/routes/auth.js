@@ -53,6 +53,17 @@ router.post('/register', async (req, res) => {
       return res.json({ success: false, message: 'All fields are required' });
     }
 
+    // Validate userType - Admin registration NOT allowed via public signup
+    const validTypes = ['student', 'teacher', 'parent', 'general'];
+    if (!validTypes.includes(userType)) {
+      return res.json({ success: false, message: 'Invalid user type' });
+    }
+
+    // Block admin registration from public form
+    if (userType === 'admin') {
+      return res.json({ success: false, message: 'Admin registration is not allowed. Contact system administrator.' });
+    }
+
     // OTP must be verified already
     const isVerified = await checkOTPExists(email, 'registration');
     if (!isVerified) {
@@ -67,6 +78,7 @@ router.post('/register', async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
+    // Admin aur General auto-approved (handled in model pre-save hook)
     const newUser = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -76,13 +88,41 @@ router.post('/register', async (req, res) => {
       isVerified: true
     });
 
-    const token = jwt.sign(
-      { userId: newUser._id, email: newUser.email, userType: newUser.userType },
-      process.env.JWT_SECRET || 'madarsa_secret_key',
-      { expiresIn: '30d' }
-    );
-
-    return res.json({ success: true, message: 'Registration successful', token, user: newUser });
+    // Different response based on userType
+    if (userType === 'admin' || userType === 'general') {
+      // Instant login for admin and general users
+      const token = jwt.sign(
+        { userId: newUser._id, email: newUser.email, userType: newUser.userType },
+        process.env.JWT_SECRET || 'madarsa_secret_key',
+        { expiresIn: '30d' }
+      );
+      return res.json({
+        success: true,
+        message: 'Registration successful',
+        token,
+        user: {
+          id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          userType: newUser.userType,
+          isApproved: newUser.isApproved
+        }
+      });
+    } else {
+      // Teacher, Student, Parent - need admin approval
+      return res.json({
+        success: true,
+        message: 'Registration successful! Your account is pending admin approval. You will be notified once approved.',
+        requiresApproval: true,
+        user: {
+          id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          userType: newUser.userType,
+          approvalStatus: newUser.approvalStatus
+        }
+      });
+    }
 
   } catch (error) {
     console.error('Registration error:', error);
@@ -124,6 +164,22 @@ router.post('/verify-otp-login', async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.json({ success: false, message: 'User not found' });
 
+    // Check approval status for non-admin/general users
+    if (!['admin', 'general'].includes(user.userType) && !user.isApproved) {
+      if (user.approvalStatus === 'rejected') {
+        return res.json({
+          success: false,
+          message: `Your account was rejected. Reason: ${user.rejectionReason || 'Not specified'}`,
+          approvalStatus: 'rejected'
+        });
+      }
+      return res.json({
+        success: false,
+        message: 'Your account is pending admin approval. Please wait for approval.',
+        approvalStatus: 'pending'
+      });
+    }
+
     user.lastLogin = new Date();
     await user.save();
 
@@ -163,6 +219,22 @@ router.post('/login-email', async (req, res) => {
       return res.json({ success: false, message: 'Invalid email or password' });
     }
 
+    // Check approval status for non-admin/general users
+    if (!['admin', 'general'].includes(user.userType) && !user.isApproved) {
+      if (user.approvalStatus === 'rejected') {
+        return res.json({
+          success: false,
+          message: `Your account was rejected. Reason: ${user.rejectionReason || 'Not specified'}`,
+          approvalStatus: 'rejected'
+        });
+      }
+      return res.json({
+        success: false,
+        message: 'Your account is pending admin approval. Please wait for approval.',
+        approvalStatus: 'pending'
+      });
+    }
+
     // Update last login time
     user.lastLogin = new Date();
     await user.save();
@@ -183,7 +255,8 @@ router.post('/login-email', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        userType: user.userType
+        userType: user.userType,
+        isApproved: user.isApproved
       }
     });
 
@@ -215,6 +288,22 @@ router.post('/login-mobile', async (req, res) => {
       return res.json({ success: false, message: 'Invalid mobile or password' });
     }
 
+    // Check approval status for non-admin/general users
+    if (!['admin', 'general'].includes(user.userType) && !user.isApproved) {
+      if (user.approvalStatus === 'rejected') {
+        return res.json({
+          success: false,
+          message: `Your account was rejected. Reason: ${user.rejectionReason || 'Not specified'}`,
+          approvalStatus: 'rejected'
+        });
+      }
+      return res.json({
+        success: false,
+        message: 'Your account is pending admin approval. Please wait for approval.',
+        approvalStatus: 'pending'
+      });
+    }
+
     // Update last login time
     user.lastLogin = new Date();
     await user.save();
@@ -236,7 +325,8 @@ router.post('/login-mobile', async (req, res) => {
         name: user.name,
         email: user.email,
         mobile: user.mobile,
-        userType: user.userType
+        userType: user.userType,
+        isApproved: user.isApproved
       }
     });
 

@@ -6,9 +6,13 @@ const db = require('../config/db');
 const router = express.Router();
 
 // Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../../uploads/library');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
+const uploadsDir = path.join(__dirname, '../uploads/library');
+try {
+    if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+} catch (err) {
+    console.warn('⚠️ Could not create uploads/library directory:', err.message);
 }
 
 // Configure multer for file uploads

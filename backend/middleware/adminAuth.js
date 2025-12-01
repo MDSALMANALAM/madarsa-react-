@@ -22,7 +22,7 @@ const adminAuth = async (req, res, next) => {
             });
         }
         
-        if (user.role !== 'admin') {
+        if (user.userType !== 'admin') {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied. Admin privileges required.'

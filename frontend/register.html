@@ -192,15 +192,17 @@
 
       <div class="input-group">
         <label>I am a</label>
-        <select id="userType" required>
+        <select id="userType" required onchange="showApprovalInfo()">
           <option value="" disabled selected>Select user type</option>
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-          <option value="parent">Parent</option>
-          <option value="admin">Administrator</option>
+          <option value="general">🌐 General Public (Instant Access)</option>
+          <option value="student">📚 Madarsa Student (Requires Approval)</option>
+          <option value="teacher">👨‍🏫 Teacher (Requires Approval)</option>
+          <option value="parent">👨‍👩‍👧 Parent (Requires Approval)</option>
+          <!-- Admin signup disabled - Admin accounts are created by system only -->
         </select>
         <i class="fas fa-user-tag input-icon" style="pointer-events: none;"></i>
       </div>
+      <div id="approvalInfo" style="display:none; padding:10px; margin-bottom:15px; border-radius:8px; font-size:13px;"></div>
 
       <button type="button" class="btn" onclick="sendOTP()">
         <i class="fas fa-paper-plane"></i> Send OTP
@@ -226,6 +228,26 @@
 
 <script>
   let emailStored = "";
+
+  // Show approval info based on user type selection
+  function showApprovalInfo() {
+    const userType = document.getElementById("userType").value;
+    const infoBox = document.getElementById("approvalInfo");
+
+    if (userType === 'general') {
+      infoBox.style.display = 'block';
+      infoBox.style.background = '#e8f5e8';
+      infoBox.style.color = '#28a745';
+      infoBox.innerHTML = '✅ <strong>Instant Access!</strong> You can login immediately after registration.';
+    } else if (['student', 'teacher', 'parent'].includes(userType)) {
+      infoBox.style.display = 'block';
+      infoBox.style.background = '#fff3cd';
+      infoBox.style.color = '#856404';
+      infoBox.innerHTML = '⏳ <strong>Approval Required!</strong> Admin will verify and approve your account. You will be notified via email.';
+    } else {
+      infoBox.style.display = 'none';
+    }
+  }
 
   // Toggle password visibility
   function togglePassword(passwordFieldId, buttonElement) {
@@ -342,14 +364,25 @@
       });
 
       const r = await register.json();
-      
+
       if(!r.success) {
         alert("❌ " + (r.message || "Registration failed"));
         return;
       }
 
-      alert("✅ Account created successfully!");
-      window.location.href = "login.html";
+      // Different message based on approval status
+      if(r.requiresApproval) {
+        alert("✅ Registration successful!\n\n⏳ Your account is pending admin approval.\n\nYou will be notified via email once approved.");
+        window.location.href = "login.html";
+      } else {
+        // Admin or General - instant access
+        if(r.token) {
+          localStorage.setItem("token", r.token);
+          localStorage.setItem("user", JSON.stringify(r.user));
+        }
+        alert("✅ Account created successfully! You can now login.");
+        window.location.href = "login.html";
+      }
       
     } catch (error) {
       console.error("Registration error:", error);

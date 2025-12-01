@@ -1,0 +1,12 @@
+node_modules
+backend/node_modules
+.git
+*.log
+.env
+backend/.env
+backend/whatsapp_auth
+.DS_Store
+Thumbs.db
+*.md
+deploy.sh
+
