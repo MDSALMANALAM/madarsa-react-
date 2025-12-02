@@ -129,15 +129,20 @@ router.delete('/:userId', adminAuth, async (req, res) => {
 // ✅ Get approval stats
 router.get('/stats', adminAuth, async (req, res) => {
   try {
-    const stats = await User.aggregate([
-      { $group: { _id: '$approvalStatus', count: { $sum: 1 } } }
-    ]);
-    
-    const userTypeStats = await User.aggregate([
-      { $group: { _id: '$userType', count: { $sum: 1 } } }
-    ]);
-    
-    res.json({ success: true, approvalStats: stats, userTypeStats });
+    const pending = await User.countDocuments({ approvalStatus: 'pending' });
+    const approved = await User.countDocuments({ approvalStatus: 'approved' });
+    const rejected = await User.countDocuments({ approvalStatus: 'rejected' });
+    const total = await User.countDocuments({});
+
+    res.json({
+      success: true,
+      stats: {
+        pending,
+        approved,
+        rejected,
+        total
+      }
+    });
   } catch (error) {
     res.json({ success: false, message: 'Failed to get stats' });
   }
