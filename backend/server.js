@@ -39,6 +39,7 @@ app.use("/api/popup", popupRoutes);   // ✅ IMPORTANT
 app.use('/api/finance', financeRoutes);
 app.use('/api/reports', reportsRouter);
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/auth')); // Same as auth - for /api/user/profile
 app.use("/api/students", require("./routes/student"));
 app.use('/api/course', require('./routes/course'));
 app.use('/api/material', require('./routes/material'));

@@ -336,5 +336,41 @@ router.post('/login-mobile', async (req, res) => {
   }
 });
 
+// ✅ Get User Profile (from token)
+router.get('/profile', async (req, res) => {
+  try {
+    // Get token from header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.json({ success: false, message: 'No token provided' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+
+    // Find user
+    const user = await User.findById(decoded.userId || decoded.id).select('-password');
+
+    if (!user) {
+      return res.json({ success: false, message: 'User not found' });
+    }
+
+    return res.json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role || user.userType,
+        phone: user.mobile || user.phone
+      }
+    });
+  } catch (error) {
+    console.error('Profile error:', error.message);
+    return res.json({ success: false, message: 'Invalid token' });
+  }
+});
 
 module.exports = router;
