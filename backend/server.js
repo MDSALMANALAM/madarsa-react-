@@ -22,7 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Static Files
 app.use(express.static('public'));
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, 'frontend'))); // Docker: /app/frontend
+app.use(express.static(path.join(__dirname, '../frontend'))); // Local dev: ../frontend
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/receipts", express.static(path.join(__dirname, "receipts")));
 app.use("/public", express.static(path.join(__dirname, "public")));
