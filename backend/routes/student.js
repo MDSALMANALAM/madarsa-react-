@@ -116,6 +116,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Alias for /list endpoint (frontend compatibility)
+router.get("/list", async (req, res) => {
+  try {
+    const [rows] = await db
+      .promise()
+      .query("SELECT * FROM students ORDER BY id DESC");
+    res.json({ success: true, students: rows });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // ---------------------------
 // 🗑️ 4️⃣ DELETE STUDENT
 // ---------------------------
