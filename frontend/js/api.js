@@ -4,14 +4,9 @@
 
 // Declare API_BASE only if not already declared
 if (!window.API_BASE) {
-    // Auto-detect environment: use current host for production, localhost for development
-    const isProduction = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
-    window.API_BASE = isProduction
-        ? `http://${window.location.hostname}/api`
-        : "http://localhost:5000/api";
-
-    console.log("🌐 FIXED API_BASE =", window.API_BASE);
-
+    // Auto-detect environment: use current protocol & host
+    window.API_BASE = `${window.location.origin}/api`;
+    console.log("🌐 API_BASE =", window.API_BASE);
 }
 
 // =========================================
