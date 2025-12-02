@@ -77,23 +77,22 @@ router.post(
 // ---------------------------
 router.post("/", async (req, res) => {
   try {
-    // 👇 Debugging ke liye log
     console.log("📩 Received Data:", req.body);
 
     const { name, class: studentClass, parent, contact, status } = req.body;
 
     // Validation check
-    if (!name || !studentClass || !parent || !contact) {
+    if (!name || !parent || !contact) {
       return res
         .status(400)
-        .json({ success: false, message: "All fields are required." });
+        .json({ success: false, message: "Name, parent and contact are required." });
     }
 
-    const query =
-      "INSERT INTO students (name, class, parent, contact, status) VALUES (?, ?, ?, ?, ?)";
+    const query = `INSERT INTO students (full_name, class_level, father_name, guardian_phone, status, date_of_birth, gender)
+                   VALUES (?, ?, ?, ?, ?, CURDATE(), 'male')`;
     await db
       .promise()
-      .query(query, [name, studentClass, parent, contact, status || "Active"]);
+      .query(query, [name, studentClass || 'N/A', parent, contact, status || "pending"]);
 
     res.json({ success: true, message: "Student added successfully." });
   } catch (error) {
@@ -109,7 +108,8 @@ router.get("/", async (req, res) => {
   try {
     const [rows] = await db
       .promise()
-      .query("SELECT * FROM students ORDER BY id DESC");
+      .query(`SELECT id, full_name as name, class_level as class, father_name as parent,
+              guardian_phone as contact, status, created_at FROM students ORDER BY id DESC`);
     res.json({ success: true, students: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -121,7 +121,8 @@ router.get("/list", async (req, res) => {
   try {
     const [rows] = await db
       .promise()
-      .query("SELECT * FROM students ORDER BY id DESC");
+      .query(`SELECT id, full_name as name, class_level as class, father_name as parent,
+              guardian_phone as contact, status, created_at FROM students ORDER BY id DESC`);
     res.json({ success: true, students: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
