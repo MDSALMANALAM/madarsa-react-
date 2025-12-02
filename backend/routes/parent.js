@@ -39,6 +39,21 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Get parent by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [parents] = await db.promise().query('SELECT * FROM parents WHERE id = ?', [id]);
+    if (parents.length === 0) {
+      return res.status(404).json({ success: false, message: 'Parent not found' });
+    }
+    res.json({ success: true, parent: parents[0] });
+  } catch (err) {
+    console.error('Get Parent Error:', err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // Delete parent
 router.delete('/:id', async (req, res) => {
   try {
