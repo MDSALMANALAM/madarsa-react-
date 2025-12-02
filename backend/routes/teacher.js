@@ -39,6 +39,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Alias for /list endpoint
+router.get('/list', async (req, res) => {
+  try {
+    const [teachers] = await db.promise().query('SELECT * FROM teachers ORDER BY id DESC');
+    res.json({ success: true, teachers });
+  } catch (err) {
+    console.error('Fetch Teacher Error:', err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // 🧠 Delete a teacher
 router.delete('/:id', async (req, res) => {
   try {

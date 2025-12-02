@@ -42,6 +42,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/auth')); // Same as auth - for /api/user/profile
 app.use("/api/students", require("./routes/student"));
 app.use('/api/course', require('./routes/course'));
+app.use('/api/courses', require('./routes/course')); // Alias for frontend
 app.use('/api/material', require('./routes/material'));
 app.use('/api/library', require('./routes/library')); // ✅ Library route
 app.use('/api/contact', require('./routes/contact')); // ✅ Contact route
@@ -52,6 +53,7 @@ app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/teachers", require("./routes/teacher"));
 app.use("/api/popup", require("./routes/popup"));
 app.use("/api/users", require("./routes/userApproval")); // ✅ User approval routes
+app.use("/api/parents", require("./routes/parent")); // ✅ Parents route
 app.use("/api/whatsapp", require("./routes/whatsapp")); // ✅ WhatsApp routes
 
 // Serve Frontend Static Files
