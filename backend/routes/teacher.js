@@ -8,13 +8,14 @@ router.post('/', async (req, res) => {
   try {
     const { name, subject, classes, contact, status = 'Active' } = req.body;
 
-    if (!name || !subject || !classes || !contact) {
-      return res.status(400).json({ success: false, message: 'Missing fields' });
+    if (!name || !contact) {
+      return res.status(400).json({ success: false, message: 'Name and contact are required' });
     }
 
     const [result] = await db.promise().query(
-      'INSERT INTO teachers (name, subject, classes, contact, status) VALUES (?, ?, ?, ?, ?)',
-      [name, subject, classes, contact, status]
+      `INSERT INTO teachers (full_name, specialization, qualification, phone, is_active)
+       VALUES (?, ?, ?, ?, ?)`,
+      [name, subject || 'General', classes || 'N/A', contact, status === 'Active' ? 1 : 0]
     );
 
     res.json({
@@ -31,7 +32,11 @@ router.post('/', async (req, res) => {
 // 🧠 Get all teachers
 router.get('/', async (req, res) => {
   try {
-    const [teachers] = await db.promise().query('SELECT * FROM teachers ORDER BY id DESC');
+    const [teachers] = await db.promise().query(
+      `SELECT id, full_name as name, specialization as subject, qualification as classes,
+       phone as contact, IF(is_active=1,'Active','Inactive') as status, created_at
+       FROM teachers ORDER BY id DESC`
+    );
     res.json({ success: true, teachers });
   } catch (err) {
     console.error('Fetch Teacher Error:', err);
@@ -42,7 +47,11 @@ router.get('/', async (req, res) => {
 // Alias for /list endpoint
 router.get('/list', async (req, res) => {
   try {
-    const [teachers] = await db.promise().query('SELECT * FROM teachers ORDER BY id DESC');
+    const [teachers] = await db.promise().query(
+      `SELECT id, full_name as name, specialization as subject, qualification as classes,
+       phone as contact, IF(is_active=1,'Active','Inactive') as status, created_at
+       FROM teachers ORDER BY id DESC`
+    );
     res.json({ success: true, teachers });
   } catch (err) {
     console.error('Fetch Teacher Error:', err);
