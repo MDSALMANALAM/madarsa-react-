@@ -40,14 +40,14 @@ router.get("/", async (req, res) => {
     // Get recent admissions
     try {
       const [admissionRows] = await db.promise().query(
-        "SELECT admission_no, full_name, status, created_at FROM admissions WHERE created_at >= ? ORDER BY created_at DESC LIMIT 5",
+        "SELECT admission_no, student_name, status, created_at FROM admissions WHERE created_at >= ? ORDER BY created_at DESC LIMIT 5",
         [dateFilter]
       );
       admissionRows.forEach(row => {
         const date = new Date(row.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         activities.push({
           date: date,
-          activity: `New admission: ${row.full_name} (${row.admission_no})`,
+          activity: `New admission: ${row.student_name} (${row.admission_no})`,
           user: "Admission Dept",
           status: row.status === 'approved' ? 'Completed' : row.status === 'pending' ? 'Pending' : 'Rejected'
         });
@@ -78,14 +78,14 @@ router.get("/", async (req, res) => {
     // Get recent students
     try {
       const [studentRows2] = await db.promise().query(
-        "SELECT name, class, created_at FROM students WHERE created_at >= ? ORDER BY created_at DESC LIMIT 3",
+        "SELECT full_name, class_level, created_at FROM students WHERE created_at >= ? ORDER BY created_at DESC LIMIT 3",
         [dateFilter]
       );
       studentRows2.forEach(row => {
         const date = new Date(row.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         activities.push({
           date: date,
-          activity: `👨‍🎓 New student registered: ${row.name} (Class ${row.class})`,
+          activity: `👨‍🎓 New student registered: ${row.full_name} (${row.class_level})`,
           user: "Admin",
           status: "Completed"
         });
@@ -97,14 +97,14 @@ router.get("/", async (req, res) => {
     // Get recent teachers
     try {
       const [teacherRows2] = await db.promise().query(
-        "SELECT name, subject, created_at FROM teachers WHERE created_at >= ? ORDER BY created_at DESC LIMIT 3",
+        "SELECT full_name, specialization, created_at FROM teachers WHERE created_at >= ? ORDER BY created_at DESC LIMIT 3",
         [dateFilter]
       );
       teacherRows2.forEach(row => {
         const date = new Date(row.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         activities.push({
           date: date,
-          activity: `👨‍🏫 New teacher joined: ${row.name} (${row.subject})`,
+          activity: `👨‍🏫 New teacher joined: ${row.full_name} (${row.specialization})`,
           user: "HR Dept",
           status: "Completed"
         });
