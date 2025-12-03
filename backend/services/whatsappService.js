@@ -2,13 +2,14 @@
 // WhatsApp Service using Baileys
 // Madarsa Imdadul Uloom
 // Works in LOCAL and PRODUCTION (Docker)
+// Uses Pairing Code method (more reliable on servers)
 // =============================================
 
 const path = require('path');
 const fs = require('fs');
 
 // Safely load Baileys module
-let makeWASocket, DisconnectReason, useMultiFileAuthState;
+let makeWASocket, DisconnectReason, useMultiFileAuthState, makeCacheableSignalKeyStore, Browsers;
 let isBaileysAvailable = false;
 
 try {
@@ -16,6 +17,8 @@ try {
     makeWASocket = baileys.default;
     DisconnectReason = baileys.DisconnectReason;
     useMultiFileAuthState = baileys.useMultiFileAuthState;
+    makeCacheableSignalKeyStore = baileys.makeCacheableSignalKeyStore;
+    Browsers = baileys.Browsers;
     isBaileysAvailable = true;
 } catch (e) {
     console.warn('⚠️ Baileys package not installed - WhatsApp disabled');
@@ -25,8 +28,11 @@ try {
 let sock = null;
 let isConnected = false;
 let qrCode = null;
+let pairingCode = null;
+let isInitializing = false;
 
 const AUTH_DIR = path.join(__dirname, '..', 'whatsapp_auth');
+const ADMIN_PHONE = process.env.ADMIN_PHONE || '9625954687';
 
 // Ensure auth directory exists
 try {
@@ -37,8 +43,14 @@ try {
     console.warn('⚠️ Could not create WhatsApp auth directory');
 }
 
-// Initialize WhatsApp connection
-async function initWhatsApp() {
+// Initialize WhatsApp connection with Pairing Code
+async function initWhatsApp(phoneNumber = null) {
+    // Prevent multiple simultaneous init attempts
+    if (isInitializing) {
+        console.log('⏳ WhatsApp already initializing...');
+        return null;
+    }
+
     // Skip if WhatsApp disabled via env
     if (process.env.WHATSAPP_ENABLED === 'false') {
         console.log('ℹ️ WhatsApp disabled via WHATSAPP_ENABLED=false');
@@ -51,6 +63,8 @@ async function initWhatsApp() {
         return null;
     }
 
+    isInitializing = true;
+
     try {
         console.log('🔄 Initializing WhatsApp connection...');
         const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
@@ -58,8 +72,36 @@ async function initWhatsApp() {
         sock = makeWASocket({
             auth: state,
             printQRInTerminal: true,
-            browser: ['Madarsa Imdadul Uloom', 'Chrome', '1.0.0']
+            browser: Browsers.ubuntu('Chrome'),
+            syncFullHistory: false,
+            generateHighQualityLinkPreview: false
         });
+
+        // Request pairing code if not registered and phone number provided
+        if (!sock.authState.creds.registered) {
+            const phone = phoneNumber || ADMIN_PHONE;
+            if (phone) {
+                setTimeout(async () => {
+                    try {
+                        const formattedPhone = phone.replace(/\D/g, '');
+                        const fullPhone = formattedPhone.length === 10 ? '91' + formattedPhone : formattedPhone;
+                        pairingCode = await sock.requestPairingCode(fullPhone);
+                        console.log('');
+                        console.log('═══════════════════════════════════════════');
+                        console.log('📱 WhatsApp PAIRING CODE:', pairingCode);
+                        console.log('═══════════════════════════════════════════');
+                        console.log('');
+                        console.log('👉 Open WhatsApp on phone');
+                        console.log('👉 Go to Settings > Linked Devices > Link a Device');
+                        console.log('👉 Choose "Link with phone number instead"');
+                        console.log('👉 Enter this code:', pairingCode);
+                        console.log('');
+                    } catch (err) {
+                        console.log('⚠️ Pairing code error:', err.message);
+                    }
+                }, 3000);
+            }
+        }
 
         // Connection update handler
         sock.ev.on('connection.update', (update) => {
@@ -72,15 +114,20 @@ async function initWhatsApp() {
 
             if (connection === 'close') {
                 isConnected = false;
-                const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-                console.log('❌ WhatsApp disconnected, reconnecting:', shouldReconnect);
+                isInitializing = false;
+                const statusCode = lastDisconnect?.error?.output?.statusCode;
+                const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+                console.log('❌ WhatsApp disconnected, status:', statusCode, 'reconnecting:', shouldReconnect);
 
                 if (shouldReconnect) {
-                    setTimeout(initWhatsApp, 5000);
+                    // Increase delay to avoid rapid reconnection
+                    setTimeout(() => initWhatsApp(phoneNumber), 10000);
                 }
             } else if (connection === 'open') {
                 isConnected = true;
+                isInitializing = false;
                 qrCode = null;
+                pairingCode = null;
                 console.log('✅ WhatsApp connected successfully!');
             }
         });
@@ -90,6 +137,7 @@ async function initWhatsApp() {
 
         return sock;
     } catch (error) {
+        isInitializing = false;
         console.error('❌ WhatsApp init error:', error.message);
         console.log('ℹ️ App will continue without WhatsApp notifications');
         return null;
@@ -172,7 +220,9 @@ async function sendDocument(phone, filePath, filename) {
 function getStatus() {
     return {
         connected: isConnected,
-        qrCode: qrCode
+        qrCode: qrCode,
+        pairingCode: pairingCode,
+        isInitializing: isInitializing
     };
 }
 

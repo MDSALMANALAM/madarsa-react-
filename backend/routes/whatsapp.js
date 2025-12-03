@@ -17,7 +17,10 @@ router.get('/status', (req, res) => {
     res.json({
         success: true,
         connected: status.connected,
-        hasQR: !!status.qrCode
+        hasQR: !!status.qrCode,
+        hasPairingCode: !!status.pairingCode,
+        pairingCode: status.pairingCode,
+        isInitializing: status.isInitializing
     });
 });
 
@@ -27,7 +30,7 @@ router.get('/status', (req, res) => {
 router.get('/qr', async (req, res) => {
     try {
         const status = whatsapp.getStatus();
-        
+
         if (status.connected) {
             return res.json({
                 success: true,
@@ -35,17 +38,27 @@ router.get('/qr', async (req, res) => {
                 message: 'WhatsApp already connected!'
             });
         }
-        
+
+        // Return pairing code if available
+        if (status.pairingCode) {
+            return res.json({
+                success: true,
+                connected: false,
+                pairingCode: status.pairingCode,
+                message: 'Enter this pairing code in WhatsApp: ' + status.pairingCode
+            });
+        }
+
         if (!status.qrCode) {
             return res.json({
                 success: false,
-                message: 'QR code not available yet. Please wait...'
+                message: 'QR code not available yet. Check logs for pairing code...'
             });
         }
-        
+
         // Generate QR code as data URL
         const qrDataUrl = await QRCode.toDataURL(status.qrCode);
-        
+
         res.json({
             success: true,
             connected: false,
@@ -123,10 +136,11 @@ router.post('/broadcast', async (req, res) => {
 // ============================
 router.post('/init', async (req, res) => {
     try {
-        await whatsapp.initWhatsApp();
+        const { phone } = req.body;
+        await whatsapp.initWhatsApp(phone);
         res.json({
             success: true,
-            message: 'WhatsApp initialization started. Check /qr for QR code.'
+            message: 'WhatsApp initialization started. Check logs for pairing code or /qr for QR code.'
         });
     } catch (error) {
         res.status(500).json({
