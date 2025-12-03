@@ -25,7 +25,7 @@ router.get('/status', (req, res) => {
 });
 
 // ============================
-// 📱 Get QR Code for Scanning
+// 📱 Get QR Code / Pairing Code
 // ============================
 router.get('/qr', async (req, res) => {
     try {
@@ -36,6 +36,16 @@ router.get('/qr', async (req, res) => {
                 success: true,
                 connected: true,
                 message: 'WhatsApp already connected!'
+            });
+        }
+
+        // Return pairing code if available (preferred method)
+        if (status.pairingCode) {
+            return res.json({
+                success: true,
+                connected: false,
+                pairingCode: status.pairingCode,
+                message: 'Use this pairing code in WhatsApp: Settings > Linked Devices > Link with phone number'
             });
         }
 
@@ -64,7 +74,7 @@ router.get('/qr', async (req, res) => {
         return res.json({
             success: false,
             connected: false,
-            message: 'QR code not available. Click "Initialize" button first.',
+            message: 'Not initialized. Send phone number to get pairing code.',
             needsInit: true
         });
     } catch (error) {
@@ -138,12 +148,20 @@ router.post('/broadcast', async (req, res) => {
 // ============================
 router.post('/init', async (req, res) => {
     try {
+        const { phone } = req.body || {};
+
         // Reset attempts before initializing
         whatsapp.resetReconnectAttempts();
-        await whatsapp.initWhatsApp();
+        await whatsapp.initWhatsApp(phone);
+
+        const message = phone
+            ? 'WhatsApp initialization started. Pairing code will be generated in 3 seconds. Check /qr endpoint.'
+            : 'WhatsApp initialization started. Use /qr to get QR code for scanning.';
+
         res.json({
             success: true,
-            message: 'WhatsApp initialization started. Use /qr to get QR code for scanning.'
+            message,
+            note: phone ? 'Wait 5 seconds then check /qr for pairing code' : null
         });
     } catch (error) {
         res.status(500).json({

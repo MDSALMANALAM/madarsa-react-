@@ -2,7 +2,7 @@
 // WhatsApp Service using Baileys
 // Madarsa Imdadul Uloom
 // Works in LOCAL and PRODUCTION (Docker)
-// Uses QR Code method for easy scanning
+// Uses Pairing Code method (more reliable, no rate limit)
 // =============================================
 
 const path = require('path');
@@ -29,10 +29,11 @@ let sock = null;
 let isConnected = false;
 let qrCode = null;
 let qrCodeDataUrl = null;
+let pairingCode = null;
 let isInitializing = false;
 let reconnectAttempts = 0;
 let lastError = null;
-const MAX_RECONNECT_ATTEMPTS = 5;
+const MAX_RECONNECT_ATTEMPTS = 3;
 
 const AUTH_DIR = path.join(__dirname, '..', 'whatsapp_auth');
 
@@ -45,8 +46,8 @@ try {
     console.warn('⚠️ Could not create WhatsApp auth directory');
 }
 
-// Initialize WhatsApp connection with QR Code
-async function initWhatsApp() {
+// Initialize WhatsApp connection with Pairing Code
+async function initWhatsApp(phoneNumber = null) {
     // Prevent multiple simultaneous init attempts
     if (isInitializing) {
         console.log('⏳ WhatsApp already initializing...');
@@ -68,26 +69,64 @@ async function initWhatsApp() {
     isInitializing = true;
     reconnectAttempts = 0;
     lastError = null;
+    pairingCode = null;
+    qrCode = null;
+    qrCodeDataUrl = null;
 
     try {
         console.log('🔄 Initializing WhatsApp connection...');
         const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
 
+        // Check if already registered
+        const isRegistered = state.creds?.registered;
+
         sock = makeWASocket({
             auth: state,
-            printQRInTerminal: true,
+            printQRInTerminal: false, // Disable QR in terminal
             browser: Browsers.ubuntu('Chrome'),
             syncFullHistory: false,
             generateHighQualityLinkPreview: false
         });
 
+        // Request pairing code if phone number provided and not registered
+        if (phoneNumber && !isRegistered) {
+            // Format phone number
+            let cleanPhone = phoneNumber.replace(/\D/g, '');
+            if (cleanPhone.length === 10) {
+                cleanPhone = '91' + cleanPhone;
+            }
+
+            // Wait a bit for connection then request pairing code
+            setTimeout(async () => {
+                try {
+                    if (!isConnected && sock) {
+                        const code = await sock.requestPairingCode(cleanPhone);
+                        pairingCode = code;
+                        console.log('');
+                        console.log('═══════════════════════════════════════════');
+                        console.log('📱 WhatsApp Pairing Code: ' + code);
+                        console.log('═══════════════════════════════════════════');
+                        console.log('👉 Open WhatsApp on your phone');
+                        console.log('👉 Go to Settings > Linked Devices');
+                        console.log('👉 Tap "Link a Device"');
+                        console.log('👉 Tap "Link with phone number instead"');
+                        console.log('👉 Enter code: ' + code);
+                        console.log('═══════════════════════════════════════════');
+                        console.log('');
+                    }
+                } catch (e) {
+                    console.log('⚠️ Could not get pairing code:', e.message);
+                }
+            }, 3000);
+        }
+
         // Connection update handler
         sock.ev.on('connection.update', async (update) => {
             const { connection, lastDisconnect, qr } = update;
 
+            // If QR code received (fallback)
             if (qr) {
                 qrCode = qr;
-                // Generate QR code data URL for web display
                 try {
                     const QRCode = require('qrcode');
                     qrCodeDataUrl = await QRCode.toDataURL(qr);
@@ -95,19 +134,18 @@ async function initWhatsApp() {
                     console.log('═══════════════════════════════════════════');
                     console.log('📱 WhatsApp QR Code Generated!');
                     console.log('═══════════════════════════════════════════');
-                    console.log('👉 Open: https://madarsaiu.cloud/admin-dashboard.html');
-                    console.log('👉 Click "Show QR" button');
-                    console.log('👉 Scan QR code with WhatsApp');
+                    console.log('👉 Scan with WhatsApp OR use pairing code');
                     console.log('═══════════════════════════════════════════');
                     console.log('');
                 } catch (e) {
-                    console.log('📱 WhatsApp QR Code generated - Scan to connect!');
+                    console.log('📱 WhatsApp QR Code generated');
                 }
             }
 
             if (connection === 'close') {
                 isConnected = false;
                 isInitializing = false;
+                pairingCode = null;
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
                 lastError = statusCode;
 
@@ -118,34 +156,35 @@ async function initWhatsApp() {
                 console.log('❌ WhatsApp disconnected, status:', statusCode);
 
                 if (isRateLimited) {
-                    console.log('⚠️ Rate limited by WhatsApp! Wait 5-10 minutes before trying again.');
-                    console.log('   Run: docker exec madarsa_backend rm -rf /app/whatsapp_auth/*');
-                    reconnectAttempts = MAX_RECONNECT_ATTEMPTS; // Stop reconnecting
-                    return;
-                }
-
-                if (isLoggedOut) {
-                    console.log('📴 WhatsApp logged out - Manual re-initialization required');
+                    console.log('⚠️ Rate limited! Use Pairing Code method instead:');
+                    console.log('   Call: POST /api/whatsapp/init with {"phone": "YOUR_NUMBER"}');
                     reconnectAttempts = MAX_RECONNECT_ATTEMPTS;
                     return;
                 }
 
-                // Reconnect with exponential backoff (max 5 attempts)
+                if (isLoggedOut) {
+                    console.log('📴 WhatsApp logged out - Clear auth and try again');
+                    reconnectAttempts = MAX_RECONNECT_ATTEMPTS;
+                    return;
+                }
+
+                // Limited reconnection
                 reconnectAttempts++;
                 if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
-                    const delay = Math.min(30000, reconnectAttempts * 10000); // 10s, 20s, 30s...
+                    const delay = reconnectAttempts * 15000; // 15s, 30s, 45s
                     console.log(`🔄 Reconnecting in ${delay/1000}s (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
                     setTimeout(() => initWhatsApp(), delay);
                 } else {
-                    console.log('❌ Max reconnect attempts reached. Manual initialization required.');
+                    console.log('❌ Max attempts reached. Use pairing code method.');
                 }
             } else if (connection === 'open') {
                 isConnected = true;
                 isInitializing = false;
-                reconnectAttempts = 0; // Reset on successful connection
+                reconnectAttempts = 0;
                 lastError = null;
                 qrCode = null;
                 qrCodeDataUrl = null;
+                pairingCode = null;
                 console.log('✅ WhatsApp connected successfully!');
             }
         });
@@ -240,6 +279,7 @@ function getStatus() {
         connected: isConnected,
         qrCode: qrCode,
         qrCodeDataUrl: qrCodeDataUrl,
+        pairingCode: pairingCode,
         isInitializing: isInitializing,
         lastError: lastError,
         reconnectAttempts: reconnectAttempts,
