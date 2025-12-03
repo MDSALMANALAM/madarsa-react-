@@ -30,6 +30,9 @@ let isConnected = false;
 let qrCode = null;
 let pairingCode = null;
 let isInitializing = false;
+let reconnectAttempts = 0;
+let lastError = null;
+const MAX_RECONNECT_ATTEMPTS = 5;
 
 const AUTH_DIR = path.join(__dirname, '..', 'whatsapp_auth');
 const ADMIN_PHONE = process.env.ADMIN_PHONE || '9625954687';
@@ -116,16 +119,41 @@ async function initWhatsApp(phoneNumber = null) {
                 isConnected = false;
                 isInitializing = false;
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
-                const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-                console.log('❌ WhatsApp disconnected, status:', statusCode, 'reconnecting:', shouldReconnect);
+                lastError = statusCode;
 
-                if (shouldReconnect) {
-                    // Increase delay to avoid rapid reconnection
-                    setTimeout(() => initWhatsApp(phoneNumber), 10000);
+                // Don't reconnect on rate limit (405, 428) or logged out
+                const isRateLimited = statusCode === 405 || statusCode === 428;
+                const isLoggedOut = statusCode === DisconnectReason.loggedOut;
+
+                console.log('❌ WhatsApp disconnected, status:', statusCode);
+
+                if (isRateLimited) {
+                    console.log('⚠️ Rate limited by WhatsApp! Wait 5-10 minutes before trying again.');
+                    console.log('   Run: docker exec madarsa_backend rm -rf /app/whatsapp_auth/*');
+                    reconnectAttempts = MAX_RECONNECT_ATTEMPTS; // Stop reconnecting
+                    return;
+                }
+
+                if (isLoggedOut) {
+                    console.log('📴 WhatsApp logged out - Manual re-initialization required');
+                    reconnectAttempts = MAX_RECONNECT_ATTEMPTS;
+                    return;
+                }
+
+                // Reconnect with exponential backoff (max 5 attempts)
+                reconnectAttempts++;
+                if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
+                    const delay = Math.min(30000, reconnectAttempts * 10000); // 10s, 20s, 30s...
+                    console.log(`🔄 Reconnecting in ${delay/1000}s (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+                    setTimeout(() => initWhatsApp(phoneNumber), delay);
+                } else {
+                    console.log('❌ Max reconnect attempts reached. Manual initialization required.');
                 }
             } else if (connection === 'open') {
                 isConnected = true;
                 isInitializing = false;
+                reconnectAttempts = 0; // Reset on successful connection
+                lastError = null;
                 qrCode = null;
                 pairingCode = null;
                 console.log('✅ WhatsApp connected successfully!');
@@ -222,8 +250,18 @@ function getStatus() {
         connected: isConnected,
         qrCode: qrCode,
         pairingCode: pairingCode,
-        isInitializing: isInitializing
+        isInitializing: isInitializing,
+        lastError: lastError,
+        reconnectAttempts: reconnectAttempts,
+        maxAttempts: MAX_RECONNECT_ATTEMPTS
     };
+}
+
+// Reset reconnect attempts (for manual retry)
+function resetReconnectAttempts() {
+    reconnectAttempts = 0;
+    lastError = null;
+    console.log('🔄 Reconnect attempts reset - Ready to try again');
 }
 
 // Logout and clear session
@@ -244,6 +282,7 @@ module.exports = {
     sendDocument,
     getStatus,
     logout,
-    formatPhoneNumber
+    formatPhoneNumber,
+    resetReconnectAttempts
 };
 
