@@ -17,10 +17,10 @@ router.get('/status', (req, res) => {
     res.json({
         success: true,
         connected: status.connected,
-        hasQR: !!status.qrCode,
-        hasPairingCode: !!status.pairingCode,
-        pairingCode: status.pairingCode,
-        isInitializing: status.isInitializing
+        hasQR: !!status.qrCode || !!status.qrCodeDataUrl,
+        isInitializing: status.isInitializing,
+        lastError: status.lastError,
+        reconnectAttempts: status.reconnectAttempts
     });
 });
 
@@ -39,31 +39,33 @@ router.get('/qr', async (req, res) => {
             });
         }
 
-        // Return pairing code if available
-        if (status.pairingCode) {
+        // Return pre-generated QR code data URL if available
+        if (status.qrCodeDataUrl) {
             return res.json({
                 success: true,
                 connected: false,
-                pairingCode: status.pairingCode,
-                message: 'Enter this pairing code in WhatsApp: ' + status.pairingCode
+                qrCode: status.qrCodeDataUrl,
+                message: 'Scan this QR code with WhatsApp'
             });
         }
 
-        if (!status.qrCode) {
+        // Generate QR code from raw data if available
+        if (status.qrCode) {
+            const qrDataUrl = await QRCode.toDataURL(status.qrCode);
             return res.json({
-                success: false,
-                message: 'QR code not available yet. Check logs for pairing code...'
+                success: true,
+                connected: false,
+                qrCode: qrDataUrl,
+                message: 'Scan this QR code with WhatsApp'
             });
         }
 
-        // Generate QR code as data URL
-        const qrDataUrl = await QRCode.toDataURL(status.qrCode);
-
-        res.json({
-            success: true,
+        // No QR code available - need to initialize
+        return res.json({
+            success: false,
             connected: false,
-            qrCode: qrDataUrl,
-            message: 'Scan this QR code with WhatsApp'
+            message: 'QR code not available. Click "Initialize" button first.',
+            needsInit: true
         });
     } catch (error) {
         res.status(500).json({
@@ -136,11 +138,12 @@ router.post('/broadcast', async (req, res) => {
 // ============================
 router.post('/init', async (req, res) => {
     try {
-        const { phone } = req.body;
-        await whatsapp.initWhatsApp(phone);
+        // Reset attempts before initializing
+        whatsapp.resetReconnectAttempts();
+        await whatsapp.initWhatsApp();
         res.json({
             success: true,
-            message: 'WhatsApp initialization started. Check logs for pairing code or /qr for QR code.'
+            message: 'WhatsApp initialization started. Use /qr to get QR code for scanning.'
         });
     } catch (error) {
         res.status(500).json({
