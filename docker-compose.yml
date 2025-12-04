@@ -1,125 +1,65 @@
 services:
   # =============================================
-  # NATS Server - Real-time Messaging
-  # =============================================
-  nats:
-    image: nats:latest
-    container_name: madarsa_nats
-    ports:
-      - "4222:4222"   # Client connections
-      - "8222:8222"   # HTTP monitoring
-      - "6222:6222"   # Cluster routing
-    command: ["--http_port", "8222", "--js"]  # Enable JetStream
-    restart: unless-stopped
-    networks:
-      - madarsa_network
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8222/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  # =============================================
-  # Backend API Server
+  # Spring Boot Backend API Server
   # =============================================
   backend:
     build:
-      context: ./backend
+      context: ./backend-spring
       dockerfile: Dockerfile
     container_name: madarsa_backend
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=production
-      - PORT=5000
-      # MongoDB
-      - MONGODB_URI=mongodb://mongo:27017/madarsa_db
-      # MySQL
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=Salman@786
-      - MYSQL_DATABASE=madarsa
-      # NATS
-      - NATS_ENABLED=true
-      - NATS_URL=nats://nats:4222
-      # WhatsApp
-      - WHATSAPP_ENABLED=true
-      - ADMIN_PHONE=9304678815
-      - ADMIN_EMAIL=info@madarasaimdadululoom.in
-      # Auth
-      - JWT_SECRET=madarsa_secret_2024_production
+      # MySQL Database (Local MySQL - host.docker.internal for Windows/Mac)
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/madarsa?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Salman@786
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=false
+      # JWT
+      - JWT_SECRET=madarsa_imdadul_uloom_jwt_secret_key_2024_production_very_secure_long_key_for_authentication
+      - JWT_EXPIRATION=2592000000
       # Email
-      - EMAIL_USER=salmanalam8083@gmail.com
-      - EMAIL_PASS=ixyhexizbeufecli
+      - SPRING_MAIL_USERNAME=salmanalam8083@gmail.com
+      - SPRING_MAIL_PASSWORD=ixyhexizbeufecli
+      # WhatsApp Cloud API
+      - WHATSAPP_CLOUD_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID:-your-phone-number-id}
+      - WHATSAPP_CLOUD_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN:-your-access-token}
+      - WHATSAPP_ADMIN_PHONE=9304678815
       # Razorpay
       - RAZORPAY_KEY_ID=rzp_test_RblgQ2X8PdXSRw
       - RAZORPAY_KEY_SECRET=Y12S0JH0RXmApi4aC5JkRXHX
+      # Admin
+      - ADMIN_PHONE=9304678815
+      - ADMIN_EMAIL=info@madarasaimdadululoom.in
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+    networks:
+      - madarsa_network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5000/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =============================================
+  # React Frontend
+  # =============================================
+  frontend:
+    build:
+      context: ./frontend-react
+      dockerfile: Dockerfile
+    container_name: madarsa_frontend
+    ports:
+      - "80:80"
     depends_on:
-      - mongo
-      - mysql
-      - nats
-    volumes:
-      - whatsapp_auth:/app/whatsapp_auth  # Persist WhatsApp session
-      - ./backend/uploads:/app/uploads
-      - ./backend/receipts:/app/receipts
-      - ./frontend:/app/frontend  # Mount frontend for serving
+      - backend
     restart: unless-stopped
     networks:
       - madarsa_network
-
-  # =============================================
-  # MongoDB Database
-  # =============================================
-  mongo:
-    image: mongo:6
-    container_name: madarsa_mongodb
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=madarsa_db
-    volumes:
-      - mongo_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    restart: unless-stopped
-    networks:
-      - madarsa_network
-
-  # =============================================
-  # MySQL Database (Optional - for admissions)
-  # =============================================
-  mysql:
-    image: mysql:8.0
-    container_name: madarsa_mysql
-    ports:
-      - "3307:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=Salman@786
-      - MYSQL_DATABASE=madarsa
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./database/sql:/docker-entrypoint-initdb.d:ro
-    restart: unless-stopped
-    networks:
-      - madarsa_network
-
-  # Optional: Frontend service (अगर हो तो)
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: ../docker/Dockerfile.frontend
-  #   container_name: madarsa_frontend
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - backend
-  #   restart: unless-stopped
-  #   networks:
-  #     - madarsa_network
-
-volumes:
-  mongo_data:
-  mysql_data:
-  whatsapp_auth:  # Persist WhatsApp authentication
 
 networks:
   madarsa_network:

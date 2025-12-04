@@ -1,0 +1,67 @@
+/* Admission Receipt Styles */
+.receipt-page { padding: 20px; background: #f5f5f5; min-height: 100vh; }
+.receipt-loading, .receipt-error { display: flex; align-items: center; justify-content: center; height: 100vh; font-size: 1.5rem; gap: 10px; }
+.receipt-error { color: #dc3545; }
+.receipt-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+.receipt-actions .btn { padding: 10px 20px; display: flex; align-items: center; gap: 8px; }
+
+.receipt-container {
+  max-width: 800px; margin: 0 auto; background: white; padding: 40px;
+  border: 2px solid #2c5aa0; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  position: relative; overflow: hidden;
+}
+
+.receipt-header { display: flex; align-items: center; gap: 20px; border-bottom: 3px solid #2c5aa0; padding-bottom: 20px; margin-bottom: 20px; }
+.school-logo { width: 80px; height: 80px; background: linear-gradient(135deg, #2c5aa0, #1a3a6e); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; }
+.school-info { flex: 1; }
+.school-info h1 { color: #2c5aa0; margin: 0 0 5px; font-size: 1.8rem; }
+.school-info p { margin: 2px 0; color: #666; font-size: 0.9rem; }
+.school-info i { margin-right: 5px; color: #2c5aa0; }
+
+.receipt-title { text-align: center; margin-bottom: 30px; }
+.receipt-title h2 { color: #333; margin: 0 0 10px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; }
+.status-badge { display: inline-block; padding: 5px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+.status-badge.pending { background: #fff3cd; color: #856404; }
+.status-badge.approved { background: #d4edda; color: #155724; }
+.status-badge.rejected { background: #f8d7da; color: #721c24; }
+
+.receipt-body { margin-bottom: 30px; }
+.receipt-row { display: flex; padding: 12px 15px; border-bottom: 1px solid #eee; }
+.receipt-row:nth-child(even) { background: #f9f9f9; }
+.receipt-row.highlight { background: #e8f4fd; border: 1px solid #2c5aa0; border-radius: 5px; margin-bottom: 10px; }
+.receipt-row .label { font-weight: 600; color: #555; width: 180px; flex-shrink: 0; }
+.receipt-row .value { color: #333; flex: 1; }
+
+.receipt-footer { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ddd; }
+.notice { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 30px; border-radius: 0 5px 5px 0; }
+.notice h4 { margin: 0 0 10px; color: #856404; }
+.notice ul { margin: 0; padding-left: 20px; }
+.notice li { margin: 5px 0; color: #666; font-size: 0.9rem; }
+
+.signature { display: flex; justify-content: space-between; margin-top: 40px; }
+.sign-box { text-align: center; }
+.sign-box p { margin: 5px 0; color: #666; font-size: 0.9rem; }
+
+.receipt-watermark {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 5rem; font-weight: bold; opacity: 0.05; pointer-events: none; white-space: nowrap;
+}
+
+/* Print Styles */
+@media print {
+  .no-print { display: none !important; }
+  .receipt-page { padding: 0; background: white; }
+  .receipt-container { border: none; box-shadow: none; padding: 20px; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media (max-width: 600px) {
+  .receipt-container { padding: 20px; }
+  .receipt-header { flex-direction: column; text-align: center; }
+  .school-logo { width: 60px; height: 60px; font-size: 2rem; }
+  .receipt-row { flex-direction: column; }
+  .receipt-row .label { width: 100%; margin-bottom: 5px; }
+  .signature { flex-direction: column; gap: 30px; }
+}
+

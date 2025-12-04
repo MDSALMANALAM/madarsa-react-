@@ -1,0 +1,192 @@
+/* Login Page Styles */
+.login-page {
+    background: linear-gradient(135deg, var(--primary, #1a5f7a), var(--secondary, #159895));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    background: #fff;
+    width: 100%;
+    max-width: 450px;
+    padding: 40px 35px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    border: 2px solid var(--accent, #57C5B6);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary, #1a5f7a);
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.mode-switch {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    background: var(--light, #f8f9fa);
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.mode-switch button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    margin: 0 3px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: var(--dark, #35373a);
+}
+
+.mode-switch button.active {
+    background: linear-gradient(135deg, var(--primary, #1a5f7a), var(--secondary, #159895));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(26, 95, 122, 0.3);
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 45px 15px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--light, #f8f9fa);
+}
+
+.input-group input:focus {
+    border-color: var(--accent, #57C5B6);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(87, 197, 182, 0.2);
+    background: white;
+}
+
+.input-group .input-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.input-group .input-icon:hover {
+    color: var(--primary, #1a5f7a);
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark, #35373a);
+    cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary, #1a5f7a);
+}
+
+.forgot-password {
+    color: var(--primary, #1a5f7a);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: var(--secondary, #159895);
+    text-decoration: underline;
+}
+
+.login-container .btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary, #1a5f7a), var(--secondary, #159895));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(26, 95, 122, 0.3);
+}
+
+.login-container .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 95, 122, 0.4);
+}
+
+.login-container .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.otp-info {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #e8f5e8;
+    border-radius: 6px;
+    color: var(--success, #28a745);
+    font-size: 0.9rem;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 25px;
+    color: var(--dark, #35373a);
+}
+
+.register-link a {
+    color: var(--primary, #1a5f7a);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+    color: var(--secondary, #159895);
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .login-container { padding: 30px 25px; }
+    .login-container h2 { font-size: 1.7rem; }
+    .mode-switch { flex-direction: column; gap: 5px; }
+    .mode-switch button { margin: 2px 0; }
+    .remember-forgot { flex-direction: column; gap: 10px; align-items: flex-start; }
+}
+

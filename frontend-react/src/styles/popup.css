@@ -1,0 +1,190 @@
+/* ========================================= */
+/*           POPUP STYLES - FIXED           */
+/* ========================================= */
+#popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    position: relative;
+    animation: popupFadeIn 0.3s ease-out;
+}
+
+@keyframes popupFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+    z-index: 10000;
+}
+
+.popup-close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.popup-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.popup-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2c5aa0;
+}
+
+.popup-text {
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* FIXED UNIQUE BUTTONS FOR POPUP ONLY */
+.popup-btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+}
+
+/* popup primary button */
+.popup-btn-primary {
+    background: #2c5aa0;
+    color: white;
+}
+
+.popup-btn-primary:hover {
+    background: #1e3a8a;
+}
+
+/* popup outline button */
+.popup-btn-outline {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.popup-btn-outline:hover {
+    background: #f5f5f5;
+    border-color: #999;
+}
+
+/* Floating Icon - Announcement Button */
+#popup-icon {
+    position: fixed;
+    bottom: 100px;  /* Above WhatsApp button (which is at 25px + 60px height + 15px gap) */
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    background: #2c5aa0;
+    color: white;
+    border-radius: 50%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 9997;  /* Below WhatsApp button z-index */
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    border: none;
+}
+
+#popup-icon:hover {
+    background: #1e3a8a;
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .popup-card {
+        padding: 15px;
+        margin: 20px;
+    }
+
+    .popup-title {
+        font-size: 1.3rem;
+    }
+
+    .popup-actions {
+        flex-direction: column;
+    }
+
+    .popup-actions .popup-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    #popup-icon {
+        bottom: 95px;  /* Above WhatsApp button on mobile */
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    #popup-icon {
+        bottom: 90px;
+        right: 15px;
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+    }
+}

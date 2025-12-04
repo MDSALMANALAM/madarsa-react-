@@ -1,0 +1,82 @@
+server:
+  port: 5000
+
+spring:
+  application:
+    name: madarsa-backend
+
+  # MySQL Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/madarsa?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+    username: root
+    password: Salman@786
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: salmanalam8083@gmail.com
+    password: ixyhexizbeufecli
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# JWT Configuration
+jwt:
+  secret: madarsa_imdadul_uloom_jwt_secret_key_2024_production_very_secure_long_key_for_authentication
+  expiration: 2592000000  # 30 days in milliseconds
+
+# WhatsApp Cloud API Configuration
+whatsapp:
+  cloud:
+    phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:your-phone-number-id}
+    access-token: ${WHATSAPP_ACCESS_TOKEN:your-access-token}
+    api-version: v18.0
+    verify-token: madarsa_verify_token
+  admin-phone: "9304678815"
+
+# Razorpay Configuration
+razorpay:
+  key-id: rzp_test_RblgQ2X8PdXSRw
+  key-secret: Y12S0JH0RXmApi4aC5JkRXHX
+
+# Admin Configuration
+admin:
+  phone: "9304678815"
+  email: info@madarasaimdadululoom.in
+
+# File Upload Configuration
+upload:
+  path: ./uploads
+  admission-docs: ./uploads/admission_docs
+  library: ./uploads/library
+  reports: ./uploads/reports
+
+# CORS Configuration
+cors:
+  allowed-origins: http://localhost:5173,http://localhost:5179,http://localhost:3000
+
+# Logging
+logging:
+  level:
+    com.madarsa: DEBUG
+    org.springframework.security: DEBUG
+
